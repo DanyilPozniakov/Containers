@@ -6,45 +6,39 @@ template<class T>
 class Node
 {
 public:
-	T data;
-	Node<T>* prev_ = nullptr;
-	Node<T>* next_ = nullptr;
+	T _data;
+	Node<T>* _prev = nullptr;
+	Node<T>* _next = nullptr;
 
-	Node(const T& value) : data(value) {};
-
+	explicit Node(const T& value) : _data(value) {};
 
 };
-
-
 
 template<class T>
 class List
 {
-	Node<T>* head_;
-	Node<T>* tail_;
-	std::size_t size_;
-
-
-
+	Node<T>* _head = nullptr;
+	Node<T>* _tail = nullptr;
+	std::size_t _size = 0;
 
 public:
-	List() : head_(nullptr), tail_(nullptr), size_(0) {};
+	explicit List() : _head(nullptr), _tail(nullptr), _size(0) {};
 
-	//List(std::initializer_list<T> list) : size_(list.size())
+	//List(std::initializer_list<T> list) : _size(list.size())
 	//{
 
 	//}
 
 	~List()
 	{
-		while (size_ != 1)
+		while (_size != 1)
 		{
-			tail_ = tail_->prev_;
-			delete tail_->next_;
-			--size_;
+            _tail = _tail->_prev;
+			delete _tail->_next;
+			--_size;
 		}
-		delete head_;
-		head_ = tail_ = nullptr;
+		delete _head;
+        _head = _tail = nullptr;
 	}
 
 	class iterator
@@ -60,23 +54,22 @@ public:
 		}
 	public:
 		iterator() : m_point_(nullptr) {};
-		iterator(Node<T>* node) : m_point_(node) {};
-		iterator(Node<T>& node) : m_point_(node) {};
+		explicit iterator(Node<T>* node) : m_point_(node) {};
 
 		T& operator*() 
 		{
-			return m_point_->data;
+			return m_point_->_data;
 		}
 
 		iterator& operator++()
 		{
-			m_point_ = m_point_->next_;
+			m_point_ = m_point_->_next;
 			return *this;
 		}
 
 		iterator& operator--()
 		{
-			m_point_ = m_point_->prev_;
+			m_point_ = m_point_->_prev;
 			return *this;
 		}
 
@@ -99,19 +92,15 @@ public:
 
 	};
 
-	class const_iterator
-	{
-
-	};
 
 	iterator begin()
 	{
-		return iterator(head_);
+		return iterator(_head);
 	}
 
 	iterator end()
 	{
-		return iterator(tail_);
+		return iterator(_tail);
 	}
 
 	void assign(std::size_t count, const T& value)
@@ -128,26 +117,26 @@ public:
 	{
 		if (empty()) return T();
 
-		return head_->data;
+		return _head->_data;
 	}
 
 	T& back()
 	{
 		if (empty()) return T();
 
-		return tail_->data;
+		return _tail->_data;
 	}
 
 	void clear()
 	{
-		while (size_ != 0)
+		while (_size != 0)
 		{
-			tail_ = tail_->prev_;
-			delete tail_->next_;
-			--size_;
+            _tail = _tail->_prev;
+			delete _tail->_next;
+			--_size;
 		}
 
-		head_ = tail_ = nullptr;
+        _head = _tail = nullptr;
 	}
 
 	
@@ -167,20 +156,17 @@ public:
 	void push_back(const T& value)
 	{
 		Node<T>* node = new Node<T>(value);
-
-		if (size_ == 0)
+		if (_size == 0)
 		{
-			head_ = tail_ = node;
-			head_->prev_ = nullptr;
+            _head = _tail = node;
 		}
 		else
 		{
-			node->prev_ = tail_;
-			tail_->next_ = node;
-			tail_ = node;
-			tail_->next_ = nullptr;
+            node->_prev = _tail;
+            _tail->_next = node;
+            _tail = node;
 		}
-		++size_;
+		++_size;
 	}
 
 
@@ -192,28 +178,28 @@ public:
 			return;
 		}
 
-		if (head_ == tail_)
+		if (_head == _tail)
 		{
-			delete tail_;
-			head_ = tail_ = nullptr;
-			--size_;
+			delete _tail;
+            _head = _tail = nullptr;
+			--_size;
 			return;
 		}
 
-		tail_ = tail_->prev_;
-		delete tail_->next_;
-		tail_->next_ = nullptr;
-		--size_;
+        _tail = _tail->_prev;
+		delete _tail->_next;
+        _tail->_next = nullptr;
+		--_size;
 	}
 
 	std::size_t size()
 	{
-		return size_;
+		return _size;
 	}
 
 	bool empty()
 	{
-		return size_ == 0;
+		return _size == 0;
 	}
 
 	

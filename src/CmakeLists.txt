@@ -1,4 +1,0 @@
-
-add_executable(LibTests main.cpp)
-
-target_link_libraries(LibTests PRIVATE PriorityQueue)

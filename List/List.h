@@ -1,6 +1,6 @@
 #pragma once
 #include <initializer_list>
-
+#include <cstddef>
 
 template<class T>
 class Node
@@ -9,199 +9,124 @@ public:
 	T _data;
 	Node<T>* _prev = nullptr;
 	Node<T>* _next = nullptr;
-
 	explicit Node(const T& value) : _data(value) {};
 
 };
 
+
+
+
+
 template<class T>
 class List
 {
-	Node<T>* _head = nullptr;
-	Node<T>* _tail = nullptr;
-	std::size_t _size = 0;
+    Node<T>* _head = nullptr;
+    Node<T>* _tail = nullptr;
+    std::size_t _size = 0;
 
 public:
-	explicit List() : _head(nullptr), _tail(nullptr), _size(0) {};
+    explicit List() : _head(nullptr), _tail(nullptr), _size(0) {}
 
-	//List(std::initializer_list<T> list) : _size(list.size())
-	//{
+    ~List()
+    {
+        clear();
+    }
 
-	//}
-
-	~List()
-	{
-		while (_size != 1)
-		{
-            _tail = _tail->_prev;
-			delete _tail->_next;
-			--_size;
-		}
-		delete _head;
-        _head = _tail = nullptr;
-	}
-
-	class iterator
-	{
-		Node<T>* m_point_;
-
-		void offsetIter(std::size_t pos)
-		{
-			for (std::size_t i = 0; i <= pos-1; ++i)
-			{
-				++*this;
-			}
-		}
-	public:
-		iterator() : m_point_(nullptr) {};
-		explicit iterator(Node<T>* node) : m_point_(node) {};
-
-		T& operator*() 
-		{
-			return m_point_->_data;
-		}
-
-		iterator& operator++()
-		{
-			m_point_ = m_point_->_next;
-			return *this;
-		}
-
-		iterator& operator--()
-		{
-			m_point_ = m_point_->_prev;
-			return *this;
-		}
-
-		bool operator==(const iterator& other)
-		{
-			return m_point_ == other.m_point_;
-		}
-
-		bool operator!=(const iterator& other)
-		{
-			return m_point_ != other.m_point_;
-		}
-
-		iterator& operator[](std::size_t pos)
-		{
-			offsetIter(pos);
-			return *this;
-
-		}
-
-	};
+    class iterator
+    {
+        Node<T>* m_point_;
+    public:
+        using iterator_category = std::bidirectional_iterator_tag;
+        using value_type = T;
+        using difference_type = std::ptrdiff_t;
+        using pointer = T*;
+        using reference = T&;
 
 
-	iterator begin()
-	{
-		return iterator(_head);
-	}
+        iterator() : m_point_(nullptr) {}
+        explicit iterator(Node<T>* node) : m_point_(node) {}
 
-	iterator end()
-	{
-		return iterator(_tail);
-	}
+        T& operator*()
+        {
+            return m_point_->_data;
+        }
 
-	void assign(std::size_t count, const T& value)
-	{
-		iterator b_ = begin();
-		for (std::size_t i = 0; i < count; ++i)
-		{
-			++b_;
-		}
-		*b_ = value;
-	}
+        iterator& operator++()
+        {
+            m_point_ = m_point_->_next;
+            return *this;
+        }
 
-	T& front()
-	{
-		if (empty()) return T();
+        iterator& operator--()
+        {
+            m_point_ = m_point_->_prev;
+            return *this;
+        }
 
-		return _head->_data;
-	}
+        bool operator==(const iterator& other) const
+        {
+            return m_point_ == other.m_point_;
+        }
 
-	T& back()
-	{
-		if (empty()) return T();
+        bool operator!=(const iterator& other) const
+        {
+            return m_point_ != other.m_point_;
+        }
+    };
 
-		return _tail->_data;
-	}
+    iterator begin()
+    {
+        return iterator(_head);
+    }
 
-	void clear()
-	{
-		while (_size != 0)
-		{
-            _tail = _tail->_prev;
-			delete _tail->_next;
-			--_size;
-		}
+    iterator end()
+    {
+        return iterator(_tail->_next);
+    }
 
-        _head = _tail = nullptr;
-	}
+    const T& front()
+    {
+        return _head->_data;
+    }
 
-	
+    const T& back()
+    {
+        return _tail->_data;
+    }
 
-	void insert(iterator pos,const T& value)
-	{
-		//!!!!!!!!!!!
-		*--pos = value;
-
-	}
-
-	void insert(std::initializer_list<T> list)
-	{
-		//!!!!
-
-	}
-	void push_back(const T& value)
-	{
-		Node<T>* node = new Node<T>(value);
-		if (_size == 0)
-		{
+    void push_back(const T& value)
+    {
+        Node<T>* node = new Node<T>(value);
+        if (_size == 0)
+        {
             _head = _tail = node;
-		}
-		else
-		{
+        }
+        else
+        {
             node->_prev = _tail;
             _tail->_next = node;
             _tail = node;
-		}
-		++_size;
-	}
+        }
+        ++_size;
+    }
 
+    void clear()
+    {
+        while (_tail != nullptr)
+        {
+            auto* temp = _tail;
+            _tail = _tail->_prev;
+            delete temp;
+        }
+        _head = _tail = nullptr;
+        _size = 0;
+    }
 
-
-	void pop_back()
-	{
-		if (empty())
-		{
-			return;
-		}
-
-		if (_head == _tail)
-		{
-			delete _tail;
-            _head = _tail = nullptr;
-			--_size;
-			return;
-		}
-
-        _tail = _tail->_prev;
-		delete _tail->_next;
-        _tail->_next = nullptr;
-		--_size;
-	}
-
-	std::size_t size()
-	{
-		return _size;
-	}
-
-	bool empty()
-	{
-		return _size == 0;
-	}
-
-	
-
+    std::size_t size()
+    {
+        return _size;
+    }
 };
+
+
+

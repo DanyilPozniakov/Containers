@@ -27,7 +27,22 @@ class List
 
 
 public:
-    explicit List() : _head(nullptr), _tail(nullptr), _size(0) {}
+    List() : _head(nullptr), _tail(nullptr), _size(0) {}
+
+    List(List<T>& other) : _size(0), _head(nullptr), _tail(nullptr)
+    {
+        for(const auto& item : other)
+        {
+            push_back(item);
+        }
+    }
+
+    List(List<T>&& other) : _size(other._size), _head(other._head), _tail(other._tail)
+    {
+        other._head = nullptr;
+        other._tail = nullptr;
+        other._size = 0;
+    }
 
     ~List()
     {
@@ -209,6 +224,34 @@ public:
         return const_iterator(nullptr,this);
     }
 
+    List<T>& operator=(const List<T>& other)
+    {
+        if(this == &other) return *this;
+        clear();
+        for(const auto& item : other)
+        {
+            push_back(item);
+        }
+        return *this;
+    }
+
+    List<T>& operator=(const List<T>&& other)
+    {
+        if(this != &other)
+        {
+            clear();
+
+            _head = other._head;
+            _tail = other._tail;
+            _size = other._size;
+
+            other._head = nullptr;
+            other._tail = nullptr;
+            other._size = 0;
+        }
+        return *this;
+    }
+
     const T& front()
     {
         return _head->_data;
@@ -234,6 +277,7 @@ public:
         }
         ++_size;
     }
+
 
     void push_front(const T& value)
     {

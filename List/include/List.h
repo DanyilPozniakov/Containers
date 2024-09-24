@@ -14,17 +14,12 @@ public:
 
 };
 
-
-
-
-
 template<class T>
 class List
 {
     Node<T>* _head = nullptr;
     Node<T>* _tail = nullptr;
     std::size_t _size = 0;
-
 
 public:
     List() : _head(nullptr), _tail(nullptr), _size(0) {}
@@ -127,7 +122,6 @@ public:
         }
     };
 
-
     class const_iterator
     {
     public:
@@ -224,6 +218,8 @@ public:
         return const_iterator(nullptr,this);
     }
 
+
+    //operators
     List<T>& operator=(const List<T>& other)
     {
         if(this == &other) return *this;
@@ -366,8 +362,6 @@ public:
         ++_size;
     }
 
-
-
     void erase(iterator& pos)
     {
         assert(pos.m_list_ == this && "Iterator does not belong to this list!");
@@ -410,6 +404,19 @@ public:
         }
     }
 
+    void remove(const T& value)
+    {
+        if(_size == 0) return;
+
+        for(auto i = begin(); i != end(); ++i)
+        {
+            if(*i == value)
+            {
+                erase(i);
+            }
+        }
+    }
+
 
     //.....
 
@@ -435,8 +442,6 @@ public:
         if(_size == 0) return true;
         return false;
     }
-
-
 
 };
 

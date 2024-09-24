@@ -2,6 +2,8 @@
 #include <initializer_list>
 #include <cstddef>
 #include <cassert>
+#include <concepts>
+
 
 template<class T>
 class Node
@@ -404,8 +406,11 @@ public:
         }
     }
 
+    template<class T>
     void remove(const T& value)
     {
+        static_assert(std::equality_comparable<T>,"Type T must support the == operator!");
+
         if(_size == 0) return;
 
         for(auto i = begin(); i != end(); ++i)

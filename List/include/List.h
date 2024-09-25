@@ -9,7 +9,7 @@ template<class T>
 class Node
 {
 public:
-	T _data;
+	T        _data = {};
 	Node<T>* _prev = nullptr;
 	Node<T>* _next = nullptr;
 	explicit Node(const T& value) : _data(value) {};
@@ -26,7 +26,7 @@ class List
 public:
     List() : _head(nullptr), _tail(nullptr), _size(0) {}
 
-    List(List<T>& other) : _size(0), _head(nullptr), _tail(nullptr)
+    List(const List<T>& other) : _size(0), _head(nullptr), _tail(nullptr)
     {
         for(const auto& item : other)
         {
@@ -34,7 +34,7 @@ public:
         }
     }
 
-    List(List<T>&& other) : _size(other._size), _head(other._head), _tail(other._tail)
+    List(List<T>&& other) noexcept : _size(other._size), _head(other._head), _tail(other._tail)
     {
         other._head = nullptr;
         other._tail = nullptr;
@@ -81,13 +81,11 @@ public:
             return *this;
         }
 
-        iterator& operator++(int)
+        iterator operator++(int)
         {
-            if(m_point_)
-            {
-                m_point_ = m_point_->_next;
-            }
-            return this;
+            iterator temp = *this;
+            ++(*this);
+            return temp;
         }
 
         iterator& operator--()
@@ -99,13 +97,11 @@ public:
             return *this;
         }
 
-        iterator& operator--(int)
+        iterator operator--(int)
         {
-            if(m_point_)
-            {
-                m_point_ = m_point_->_prev;
-            }
-            return this;
+            iterator temp = *this;
+            --(*this);
+            return temp;
         }
 
         bool operator==(const iterator& other) const
@@ -233,7 +229,7 @@ public:
         return *this;
     }
 
-    List<T>& operator=(const List<T>&& other)
+    List<T>& operator=(const List<T>&& other) noexcept
     {
         if(this != &other)
         {
@@ -422,6 +418,19 @@ public:
         }
     }
 
+    template<class Predicate>
+    void remove_if(Predicate pred)
+    {
+        for(auto iter = begin(); iter != end(); ++iter)
+        {
+            if(pred(*iter))
+            {
+                auto to_ears = iter++;
+                erase(to_ears);
+            }
+            else ++iter;
+        }
+    }
 
     //.....
 

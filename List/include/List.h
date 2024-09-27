@@ -12,19 +12,27 @@ public:
 	T        _data = {};
 	Node<T>* _prev = nullptr;
 	Node<T>* _next = nullptr;
-	explicit Node(const T& value) : _data(value) {};
 
+	explicit Node(const T& value) : _data(value) {};
 };
 
 template<class T>
 class List
 {
-    Node<T>* _head = nullptr;
-    Node<T>* _tail = nullptr;
+    Node<T>*    _head = nullptr;
+    Node<T>*    _tail = nullptr;
     std::size_t _size = 0;
 
 public:
     List() : _head(nullptr), _tail(nullptr), _size(0) {}
+
+    List(std::initializer_list<T> list) : _size(list.size())
+    {
+        for(auto item : list)
+        {
+            push_back(item);
+        }
+    }
 
     List(const List<T>& other) : _size(0), _head(nullptr), _tail(nullptr)
     {
@@ -211,7 +219,7 @@ public:
         return const_iterator(_head,this);
     }
 
-    iterator end() const
+    const_iterator end() const
     {
         return const_iterator(nullptr,this);
     }
@@ -244,6 +252,43 @@ public:
             other._size = 0;
         }
         return *this;
+    }
+
+    bool operator==(const List& other)
+    {
+        if(_size != other._size)
+        {
+            return false;
+        }
+
+        auto iter = begin();
+        auto iterOther = other.begin();
+        for(;iter != end() && iterOther != other.end(); ++iter, ++iterOther)
+        {
+            if(*iter != *iterOther)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    bool operator!=(const List& other)
+    {
+        if(_size != other._size)
+        {
+            return true;
+        }
+        auto iter = begin();
+        auto iterOther = other.begin();
+        for(;iter != end() && iterOther != other.end(); ++iter, ++iterOther)
+        {
+            if(*iter != *iterOther)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     const T& front()
@@ -432,6 +477,15 @@ public:
         }
     }
 
+    void reverse()
+    {
+        if(_head == nullptr) return;
+        auto temp = _head;
+        _head = _tail;
+        _tail = temp;
+        // TODO( reverse _prev, _next for each)
+    }
+
     //.....
 
     void clear()
@@ -446,12 +500,12 @@ public:
         _size = 0;
     }
 
-    std::size_t size() const
+    std::size_t size() const noexcept
     {
         return _size;
     }
 
-    bool isEmpty() const
+    bool isEmpty() const noexcept
     {
         if(_size == 0) return true;
         return false;

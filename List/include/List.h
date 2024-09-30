@@ -26,7 +26,7 @@ class List
 public:
     List() : _head(nullptr), _tail(nullptr), _size(0) {}
 
-    List(std::initializer_list<T> list) : _size(list.size())
+    List(std::initializer_list<T> list)
     {
         for(auto item : list)
         {
@@ -480,10 +480,22 @@ public:
     void reverse()
     {
         if(_head == nullptr) return;
-        auto temp = _head;
+
+        Node<T>* current = _head;
+        Node<T>* temp    = nullptr;
+
+        while(current != nullptr)
+        {
+            temp = current->_next;
+            current->_next = current->_prev;
+            current->_prev = temp;
+
+            current = temp;
+        }
+
+        auto tempHead = _head;
         _head = _tail;
-        _tail = temp;
-        // TODO( reverse _prev, _next for each)
+        _tail = tempHead;
     }
 
     //.....

@@ -57,11 +57,11 @@ public:
     class iterator
     {
     public:
-        using iterator_category = std::bidirectional_iterator_tag;
-        using value_type = T;
-        using difference_type = std::ptrdiff_t;
-        using pointer = T*;
-        using reference = T&;
+        using iterator_category     = std::bidirectional_iterator_tag;
+        using value_type            = T;
+        using difference_type       = std::ptrdiff_t;
+        using pointer               = T*;
+        using reference             = T&;
 
         Node<T>* m_point_;
         List<T>* m_list_;
@@ -131,11 +131,11 @@ public:
     class const_iterator
     {
     public:
-        using iterator_category = std::bidirectional_iterator_tag;
-        using value_type = T;
-        using difference_type = std::ptrdiff_t;
-        using pointer = const T*;
-        using reference = const T&;
+        using iterator_category     = std::bidirectional_iterator_tag;
+        using value_type            = T;
+        using difference_type       = std::ptrdiff_t;
+        using pointer               = const T*;
+        using reference             = const T&;
 
         const Node<T>* m_point_;
         const List<T>* m_list_;
@@ -407,7 +407,7 @@ public:
 
     void erase(iterator& pos)
     {
-        assert(pos.m_list_ == this && "Iterator does not belong to this list!");
+        assert(pos.m_list_ == this && "erase method, error: Iterator does not belong to this list!");
 
         if(pos)
         {
@@ -497,6 +497,18 @@ public:
         _head = _tail;
         _tail = tempHead;
     }
+
+    void splice(iterator pos, List& other)
+    {
+        assert(pos.m_list_ == this && "Iterator does not belong to this list!");
+
+        for(auto item : other)
+        {
+            insert(pos,item);
+        }
+        other.clear();
+    }
+
 
     //.....
 

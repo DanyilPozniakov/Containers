@@ -237,7 +237,7 @@ public:
         return *this;
     }
 
-    List<T>& operator=(const List<T>&& other) noexcept
+    List<T>& operator=(List<T>&& other) noexcept
     {
         if(this != &other)
         {
@@ -304,6 +304,22 @@ public:
     void push_back(const T& value)
     {
         auto pNode = new Node<T>(value);
+        if (_size == 0)
+        {
+            _head = _tail = pNode;
+        }
+        else
+        {
+            pNode->_prev = _tail;
+            _tail->_next = pNode;
+            _tail = pNode;
+        }
+        ++_size;
+    }
+
+    void push_back(T&& value)
+    {
+        auto pNode = new Node<T>(std::move(value));
         if (_size == 0)
         {
             _head = _tail = pNode;
@@ -415,7 +431,6 @@ public:
             {
                 delete _head;
                 _head = _tail = nullptr;
-                pos.m_point_  = nullptr;
                 --_size;
                 return;
             }
@@ -447,7 +462,6 @@ public:
         }
     }
 
-    template<class T>
     void remove(const T& value)
     {
         static_assert(std::equality_comparable<T>,"Type T must support the == operator!");
@@ -502,6 +516,8 @@ public:
     {
         assert(pos.m_list_ == this && "Iterator does not belong to this list!");
 
+        //TODO переделать что би копиревалось не по одному, а только ссилки привязивалисть
+        // и удалялся other
         for(auto item : other)
         {
             insert(pos,item);
@@ -531,8 +547,7 @@ public:
 
     bool isEmpty() const noexcept
     {
-        if(_size == 0) return true;
-        return false;
+        return _size == 0;
     }
 
 };

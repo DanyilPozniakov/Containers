@@ -7,6 +7,5 @@ set(MYUMAP_SHARED_LIBS OFF)
 include(FetchContent)
 
 add_subdirectory(lib)
-add_subdirectory(src)
 add_subdirectory(googleTests)
 add_subdirectory(benchmarks)

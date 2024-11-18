@@ -15,10 +15,10 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
-add_executable(ListTest UMapTest.cpp)
+add_executable(UMapTest UMapTest.cpp)
 
-target_link_libraries(ListTest PUBLIC gtest gtest_main UMap)
+target_link_libraries(UMapTest PUBLIC gtest gtest_main UMap)
 
 include(GoogleTest)
-gtest_discover_tests(ListTest)
+gtest_discover_tests(UMapTest)
 

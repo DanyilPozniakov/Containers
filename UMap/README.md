@@ -34,7 +34,9 @@
 - `void resize()` - rehash the map.
 
 # Benchmark:
-    ![Benchmark](resource/Benchmark.png)
+![Banchmark](https://github.com/user-attachments/assets/e3f3c089-1f93-4ea9-972b-c649fd8fffd1)
+
+    
 
 
 

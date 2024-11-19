@@ -1,4 +1,5 @@
 # Class UMap
+###Educational project!!!
 ### Template class represent a simplified realization of a hash table.
 
 # Template parameters:
